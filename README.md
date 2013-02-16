@@ -1,4 +1,9 @@
-pivot4j-pentaho
-===============
+About Pivot4J Pentaho Project
+=======
 
-This project provides a Pentaho BI plugin based on Pivot4J JSF application.
+This project contains a plugin for the Pentaho BI platform which is based on the Pivot4J JSF application. 
+
+Project Page
+=======
+
+For more information, please visit the Pivot4J homepage at http://mysticfall.github.com/pivot4j/pentaho.html
