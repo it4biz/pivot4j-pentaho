@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	<h:form id="extension-form">
+		<p:remoteCommand name="savePentahoReport"
+			actionListener="#{pentahoFileHandler.save}" update="growl" />
+
+		<p:growl id="growl" showDetail="true" life="5000" />
+	</h:form>
+
+	<script type="text/javascript">
+		function handle_puc_save(path, fileName, overwrite) {
+			savePentahoReport([ {
+				name : "path",
+				value : path
+			}, {
+				name : "fileName",
+				value : fileName
+			}, {
+				name : "overwrite",
+				value : overwrite
+			} ]);
+		}
+	</script>
+
+	<p:ajaxStatus style="display: none;"
+		onsuccess="if (parent &amp;&amp; parent.enableSave) parent.enableSave(true);">
+	</p:ajaxStatus>
+</ui:composition>

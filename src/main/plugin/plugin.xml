@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin name="pivot4j" title="pivot4j" loader="OVERRIDING">
+	<static-paths>
+		<static-path url="/pivot4j" localFolder="webapp" />
+	</static-paths>
+
+	<overlays>
+		<overlay id="launch" resourcebundle="api/repos/pivot4j/webapp/resources/i18n/messages.properties">
+			<button id="launch_new_pivot4j_analytics" image="api/repos/pivot4j/webapp/resources/images/new-report.png"
+				command="openUrl('${pentaho.launcher.newReportTitle}','${pentaho.launcher.newReportTooltip}','plugin/pivot4j/faces/index.html')"
+				label="Pivot4J Analytics" />
+		</overlay>
+
+		<overlay id="startup.pivot4j" resourcebundle="api/repos/pivot4j/webapp/resources/i18n/messages.properties">
+			<toolbar id="mainToolbar">
+				<toolbarbutton id="tb-pivot4j-new" 
+					image="../api/repos/pivot4j/webapp/resources/images/new-report32.png"
+					onclick="mantleXulHandler.openUrl('Pivot4J Analytics','Pivot4J Analytics','plugin/pivot4j/faces/index.xhtml')"
+					tooltiptext="${pentaho.launcher.newReportTooltip}" insertafter="dummyPluginContentButton" />
+			</toolbar>
+			<menubar id="newmenu">
+				<menu-item id="mi-pivot4j-new" label="${pentaho.launcher.newReportTooltip}"
+					command="mantleXulHandler.openUrl('Pivot4J Analytics','Pivot4J Analytics','plugin/pivot4j/faces/index.xhtml')" />
+			</menubar>
+		</overlay>
+	</overlays>
+
+	<content-type type="pivot4j" mime-type="text/html">
+		<title>Pivot4J Analytics</title>
+		<description>Pivot4J analytics report</description>
+		<icon-url>api/repos/pivot4j/webapp/resources/images/logo16.png</icon-url>
+		<meta-provider>com.eyeq.pivot4j.pentaho.content.PluginFileMetaProvider</meta-provider>
+		<operations>
+			<operation>
+				<id>EDIT</id>
+				<command>plugin/pivot4j/faces/index.html?solution={solution}&amp;path={path}&amp;action={name}</command>
+			</operation>
+		</operations>
+	</content-type>
+</plugin>

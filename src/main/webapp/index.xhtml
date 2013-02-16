@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>New Analysis Report</title>
+
+	<c:set var="contextPath"
+		value="#{facesContext.externalContext.requestContextPath}" />
+
+	<link type="text/css" rel="stylesheet"
+		href="#{contextPath}#{settings.resourcePrefix}/resources/css/style.css" />
+	<link type="text/css" rel="stylesheet"
+		href="#{contextPath}#{settings.resourcePrefix}/resources/css/pentaho.css" />
+</h:head>
+
+<f:metadata>
+	<f:viewParam name="ts" value="#{pentahoCatalogChooser.viewId}" />
+	<f:event type="preRenderView"
+		listener="#{pentahoCatalogChooser.checkState}" />
+</f:metadata>
+
+<h:body id="body">
+	<p:dialog id="catalog-chooser" header="New Analysis Report"
+		modal="true" width="460" height="145" visible="true"
+		rendered="#{pentahoCatalogChooser.new}" closable="false"
+		resizable="false" styleClass="catalog-chooser">
+		<h:form id="catalog-form">
+			<h:panelGrid columns="2" headerClass="info-panel"
+				columnClasses="field-name,field-input">
+				<f:facet name="header">
+					<h:panelGroup layout="block">
+						<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-info" />
+						<h:outputText
+							value="Please select a schema and a cube to create an analysis report." />
+					</h:panelGroup>
+				</f:facet>
+
+				<h:outputLabel value="Catalog" for="catalog-list" />
+				<p:selectOneMenu id="catalog-list"
+					value="#{pentahoCatalogChooser.catalogName}">
+					<f:selectItems value="#{pentahoCatalogChooser.catalogs}"
+						var="catalog" itemLabel="#{catalog.itemLabel}"
+						itemValue="#{catalog.itemValue}" />
+					<p:ajax event="change" update="cube-list,btn-ok"
+						listener="#{pentahoCatalogChooser.onCatalogChanged}" />
+				</p:selectOneMenu>
+
+				<h:outputLabel value="Cube" for="cube-list" />
+				<p:selectOneMenu id="cube-list"
+					value="#{pentahoCatalogChooser.cubeName}">
+					<f:selectItems value="#{pentahoCatalogChooser.cubes}" var="cube"
+						itemLabel="#{cube.itemLabel}" itemValue="#{cube.itemValue}" />
+					<p:ajax event="change" update="btn-ok" process="@form" />
+				</p:selectOneMenu>
+			</h:panelGrid>
+
+			<h:panelGroup styleClass="button-bar" layout="block">
+				<p:messages showDetail="true" autoUpdate="true" closable="true" />
+
+				<p:commandButton id="btn-ok" value="Ok" icon="ui-icon-check"
+					ajax="false" action="#{pentahoCatalogChooser.proceed}"
+					disabled="#{empty pentahoCatalogChooser.cubeName}" />
+			</h:panelGroup>
+		</h:form>
+	</p:dialog>
+
+	<p:ajaxStatus styleClass="ajax-status">
+		<f:facet name="start">
+			<p:graphicImage
+				value="#{settings.resourcePrefix}/resources/images/loading.gif" />
+		</f:facet>
+
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+	<p:growl id="growl" showDetail="true" sticky="true" />
+</h:body>
+</html>

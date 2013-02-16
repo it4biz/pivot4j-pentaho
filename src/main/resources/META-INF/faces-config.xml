@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee /WEB-INF/schema/web-facesconfig_2_0.xsd"
+	version="2.0" metadata-complete="false">
+	<managed-bean>
+		<managed-bean-name>dataSourceManager</managed-bean-name>
+		<managed-bean-class>com.eyeq.pivot4j.pentaho.datasource.PentahoDataSourceManager
+		</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>pivotStateManager</managed-bean-name>
+		<managed-bean-class>com.eyeq.pivot4j.primefaces.ui.PivotStateManager
+		</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+		<managed-property>
+			<property-name>dataSourceManager</property-name>
+			<value>#{dataSourceManager}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>settings</property-name>
+			<value>#{settings}</value>
+		</managed-property>
+		<managed-property>
+			<property-name>viewStateHolder</property-name>
+			<value>#{viewStateHolder}</value>
+		</managed-property>
+	</managed-bean>
+
+	<factory>
+		<exception-handler-factory>
+			com.eyeq.pivot4j.primefaces.exception.Pivot4JExceptionHandlerFactory
+		</exception-handler-factory>
+	</factory>
+</faces-config>
