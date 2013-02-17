@@ -65,7 +65,6 @@ public class FacesDispatcherServlet extends HttpServlet {
 
 			this.contextWrapper = new PluginServletContext(
 					config.getServletContext(), initParameters);
-
 			contextWrapper.initialize();
 
 			this.facesServlet = new FacesServlet();

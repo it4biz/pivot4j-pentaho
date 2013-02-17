@@ -14,6 +14,9 @@
 	<script type="text/javascript">
 		function handle_puc_save(path, fileName, overwrite) {
 			savePentahoReport([ {
+				name : "viewId",
+				value : "#{pivotStateManager.viewId}"
+			}, {
 				name : "path",
 				value : path
 			}, {
@@ -29,4 +32,6 @@
 	<p:ajaxStatus style="display: none;"
 		onsuccess="if (parent &amp;&amp; parent.enableSave) parent.enableSave(true);">
 	</p:ajaxStatus>
+
+	<h:outputStylesheet library="css" name="pentaho.css" />
 </ui:composition>

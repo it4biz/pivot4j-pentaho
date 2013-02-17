@@ -25,11 +25,10 @@
 		</overlay>
 	</overlays>
 
-	<content-type type="pivot4j" mime-type="text/html">
+	<content-type type="pivot4j" mime-type="application/pivot4j.pentaho">
 		<title>Pivot4J Analytics</title>
 		<description>Pivot4J analytics report</description>
 		<icon-url>api/repos/pivot4j/webapp/resources/images/logo16.png</icon-url>
-		<meta-provider>com.eyeq.pivot4j.pentaho.content.PluginFileMetaProvider</meta-provider>
 		<operations>
 			<operation>
 				<id>EDIT</id>
@@ -37,4 +36,9 @@
 			</operation>
 		</operations>
 	</content-type>
+
+	<content-generator id="pivot4j" type="pivot4j" title="Pivot4J Analytics Content Generator" 
+		class="com.eyeq.pivot4j.pentaho.content.ReportContentGenerator"/>
+
+	<bean id="pivot4j.generator" class="com.eyeq.pivot4j.pentaho.content.ReportContentGenerator" />
 </plugin>

@@ -1,5 +1,6 @@
 package com.eyeq.pivot4j.pentaho.servlet;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.faces.view.facelets.ResourceResolver;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
@@ -16,6 +18,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletException;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.UnhandledException;
 import org.apache.myfaces.webapp.StartupServletContextListener;
 
 public class PluginServletContext implements ServletContext {
@@ -25,6 +28,8 @@ public class PluginServletContext implements ServletContext {
 	private StartupServletContextListener listener;
 
 	private Map<String, String> initParameters;
+
+	private ResourceResolver resourceResolver;
 
 	/**
 	 * @param wrappedContext
@@ -36,6 +41,7 @@ public class PluginServletContext implements ServletContext {
 		this.initParameters = initParameters;
 
 		this.listener = new StartupServletContextListener();
+		this.resourceResolver = new PluginResourceResolver();
 	}
 
 	/**
@@ -43,6 +49,13 @@ public class PluginServletContext implements ServletContext {
 	 */
 	protected ServletContext getWrappedContext() {
 		return wrappedContext;
+	}
+
+	/**
+	 * @return the resourceResolver
+	 */
+	protected ResourceResolver getResourceResolver() {
+		return resourceResolver;
 	}
 
 	/**
@@ -192,7 +205,7 @@ public class PluginServletContext implements ServletContext {
 	 * @see javax.servlet.ServletContext#getResource(java.lang.String)
 	 */
 	public URL getResource(String path) throws MalformedURLException {
-		return wrappedContext.getResource(path);
+		return resourceResolver.resolveUrl(path);
 	}
 
 	/**
@@ -201,7 +214,19 @@ public class PluginServletContext implements ServletContext {
 	 * @see javax.servlet.ServletContext#getResourceAsStream(java.lang.String)
 	 */
 	public InputStream getResourceAsStream(String path) {
-		return wrappedContext.getResourceAsStream(path);
+		InputStream in = null;
+
+		try {
+			URL url = getResource(path);
+
+			if (url != null) {
+				in = url.openStream();
+			}
+		} catch (IOException e) {
+			throw new UnhandledException(e);
+		}
+
+		return in;
 	}
 
 	/**
