@@ -90,13 +90,13 @@ public class PentahoCatalogChooser {
 
 				for (MondrianCube cube : cubes) {
 					UISelectItem item = new UISelectItem();
+					item.setItemValue(cube.getId());
 					item.setItemLabel(cube.getName());
-					item.setItemValue(cube.getName());
 
 					cubeItems.add(item);
 
 					if (cubeName == null) {
-						this.cubeName = cube.getName();
+						this.cubeName = cube.getId();
 					}
 				}
 			}
