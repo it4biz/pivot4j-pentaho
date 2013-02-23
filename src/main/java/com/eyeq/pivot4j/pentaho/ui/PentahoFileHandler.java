@@ -79,6 +79,7 @@ public class PentahoFileHandler {
 		model.restoreState((Serializable) in.readObject());
 
 		ViewState state = new ViewState(viewId, connectionInfo, model);
+		state.setReadOnly(true);
 		state.setRendererState((Serializable) in.readObject());
 
 		in.close();
@@ -154,7 +155,7 @@ public class PentahoFileHandler {
 
 		IRepositoryFileData data = new SimpleRepositoryFileData(
 				new ByteArrayInputStream(bout.toByteArray()), "UTF-8",
-				"application/pivot4j.pentaho");
+				"text/html");
 
 		RepositoryFile file = repository.getFile(filePath);
 

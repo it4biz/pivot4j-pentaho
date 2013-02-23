@@ -21,16 +21,17 @@
 
 <f:metadata>
 	<f:viewParam name="ts" value="#{pentahoCatalogChooser.viewId}" />
+	<f:viewParam name="editable" value="#{pentahoCatalogChooser.editable}" />
 	<f:event type="preRenderView"
 		listener="#{pentahoCatalogChooser.checkState}" />
 </f:metadata>
 
 <h:body id="body">
-	<p:dialog id="catalog-chooser" header="New Analysis Report"
-		modal="true" width="380" height="145" visible="true"
-		rendered="#{pentahoCatalogChooser.new}" closable="false"
-		resizable="false" styleClass="catalog-chooser">
-		<h:form id="catalog-form">
+	<h:form id="catalog-form">
+		<p:dialog id="catalog-chooser" header="New Analysis Report"
+			modal="true" width="390" height="120" visible="true"
+			rendered="#{pentahoCatalogChooser.new}" closable="false"
+			resizable="false" styleClass="catalog-chooser">
 			<h:panelGrid columns="2" headerClass="info-panel"
 				columnClasses="field-name,field-input">
 				<f:facet name="header">
@@ -47,7 +48,7 @@
 					<f:selectItems value="#{pentahoCatalogChooser.catalogs}"
 						var="catalog" itemLabel="#{catalog.itemLabel}"
 						itemValue="#{catalog.itemValue}" />
-					<p:ajax event="change" update="cube-list,btn-ok"
+					<p:ajax event="change" update="catalog-chooser"
 						listener="#{pentahoCatalogChooser.onCatalogChanged}" />
 				</p:selectOneMenu>
 
@@ -56,19 +57,21 @@
 					value="#{pentahoCatalogChooser.cubeName}">
 					<f:selectItems value="#{pentahoCatalogChooser.cubes}" var="cube"
 						itemLabel="#{cube.itemLabel}" itemValue="#{cube.itemValue}" />
-					<p:ajax event="change" update="btn-ok" process="@form" />
+					<p:ajax event="change" update="btn-ok" />
 				</p:selectOneMenu>
 			</h:panelGrid>
 
-			<h:panelGroup styleClass="button-bar" layout="block">
-				<p:messages showDetail="true" autoUpdate="true" closable="true" />
+			<f:facet name="footer">
+				<h:panelGroup styleClass="button-bar" layout="block">
+					<p:messages showDetail="true" autoUpdate="true" closable="true" />
 
-				<p:commandButton id="btn-ok" value="Ok" icon="ui-icon-check"
-					ajax="false" action="#{pentahoCatalogChooser.proceed}"
-					disabled="#{empty pentahoCatalogChooser.cubeName}" />
-			</h:panelGroup>
-		</h:form>
-	</p:dialog>
+					<p:commandButton id="btn-ok" value="Ok" icon="ui-icon-check"
+						ajax="false" action="#{pentahoCatalogChooser.proceed}"
+						disabled="#{empty pentahoCatalogChooser.cubeName}" />
+				</h:panelGroup>
+			</f:facet>
+		</p:dialog>
+	</h:form>
 
 	<p:ajaxStatus styleClass="ajax-status">
 		<f:facet name="start">

@@ -27,6 +27,13 @@ public class ReportContentGenerator extends BaseContentGenerator {
 	}
 
 	/**
+	 * @return the editable
+	 */
+	public boolean isEditable() {
+		return false;
+	}
+
+	/**
 	 * @see org.pentaho.platform.engine.services.solution.BaseContentGenerator#createContent()
 	 */
 	@Override
@@ -41,7 +48,8 @@ public class ReportContentGenerator extends BaseContentGenerator {
 				.getParameter("file");
 
 		request.setAttribute("file", file);
-		request.getRequestDispatcher("/plugin/pivot4j/faces/index.xhtml")
+		request.getRequestDispatcher(
+				"/plugin/pivot4j/faces/index.xhtml?editable=" + isEditable())
 				.forward(request, response);
 	}
 }

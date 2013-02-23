@@ -46,6 +46,8 @@ public class PentahoCatalogChooser {
 
 	private String viewId;
 
+	private boolean editable;
+
 	public List<UISelectItem> getCatalogs() {
 		if (catalogItems == null) {
 			List<MondrianCatalog> catalogs = dataSourceManager.getCatalogs();
@@ -94,10 +96,6 @@ public class PentahoCatalogChooser {
 					item.setItemLabel(cube.getName());
 
 					cubeItems.add(item);
-
-					if (cubeName == null) {
-						this.cubeName = cube.getId();
-					}
 				}
 			}
 		}
@@ -106,8 +104,13 @@ public class PentahoCatalogChooser {
 	}
 
 	public void onCatalogChanged() {
-		this.cubeName = null;
 		this.cubeItems = null;
+
+		if (getCubes().size() > 1) {
+			this.cubeName = (String) getCubes().get(1).getItemValue();
+		} else {
+			this.cubeName = null;
+		}
 	}
 
 	public boolean isNew() {
@@ -131,6 +134,7 @@ public class PentahoCatalogChooser {
 				state = fileHandler.load(viewId, file);
 
 				if (state != null) {
+					state.setReadOnly(!editable);
 					viewStateHolder.registerState(state);
 				}
 			}
@@ -249,5 +253,20 @@ public class PentahoCatalogChooser {
 	 */
 	public void setViewId(String viewId) {
 		this.viewId = viewId;
+	}
+
+	/**
+	 * @return the editable
+	 */
+	public boolean isEditable() {
+		return editable;
+	}
+
+	/**
+	 * @param editable
+	 *            the editable to set
+	 */
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 }

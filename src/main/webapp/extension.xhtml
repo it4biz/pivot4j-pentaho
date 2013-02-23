@@ -6,7 +6,8 @@
 	xmlns:pe="http://primefaces.org/ui/extensions">
 	<h:form id="extension-form">
 		<p:remoteCommand name="savePentahoReport"
-			actionListener="#{pentahoFileHandler.save}" update="growl" />
+			actionListener="#{pentahoFileHandler.save}" update="growl"
+			rendered="#{!pivotStateManager.readOnly}" />
 
 		<p:growl id="growl" showDetail="true" life="5000" />
 	</h:form>
@@ -30,7 +31,8 @@
 	</script>
 
 	<p:ajaxStatus style="display: none;"
-		onsuccess="if (parent &amp;&amp; parent.enableSave) parent.enableSave(true);">
+		onsuccess="if (parent &amp;&amp; parent.enableSave) parent.enableSave(true);"
+		rendered="#{!pivotStateManager.readOnly}">
 	</p:ajaxStatus>
 
 	<h:outputStylesheet library="css" name="pentaho.css" />
