@@ -7,7 +7,8 @@
 	<h:form id="extension-form">
 		<p:remoteCommand name="savePentahoReport"
 			actionListener="#{pentahoFileHandler.save}" update="growl"
-			rendered="#{!pivotStateManager.readOnly}" />
+			rendered="#{!pivotStateManager.readOnly}" 
+			onsuccess="parent.mantle_refreshRepository();" />
 
 		<p:growl id="growl" showDetail="true" life="5000" />
 	</h:form>
