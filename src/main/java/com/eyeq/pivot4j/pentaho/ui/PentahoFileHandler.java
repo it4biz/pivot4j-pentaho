@@ -3,9 +3,9 @@ package com.eyeq.pivot4j.pentaho.ui;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -15,6 +15,8 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.XMLConfiguration;
 import org.olap4j.OlapDataSource;
 import org.pentaho.platform.api.engine.IPentahoSession;
 import org.pentaho.platform.api.engine.PentahoAccessControlException;
@@ -34,6 +36,7 @@ import com.eyeq.pivot4j.pentaho.datasource.PentahoDataSourceManager;
 import com.eyeq.pivot4j.primefaces.datasource.ConnectionMetadata;
 import com.eyeq.pivot4j.primefaces.state.ViewState;
 import com.eyeq.pivot4j.primefaces.state.ViewStateHolder;
+import com.eyeq.pivot4j.primefaces.ui.PrimeFacesPivotRenderer;
 
 @ManagedBean(name = "pentahoFileHandler")
 @SessionScoped
@@ -61,28 +64,67 @@ public class PentahoFileHandler {
 	 * @return
 	 * @throws IOException
 	 * @throws ClassNotFoundException
+	 * @throws ConfigurationException
 	 */
 	public ViewState load(String viewId, RepositoryFile file)
-			throws IOException, ClassNotFoundException {
+			throws IOException, ClassNotFoundException, ConfigurationException {
+		Logger logger = LoggerFactory.getLogger(getClass());
+		if (logger.isInfoEnabled()) {
+			logger.info("Saving report content to repository :");
+			logger.info("	- viewId : " + viewId);
+			logger.info("	- path : " + file.getPath());
+			logger.info("	- fileName : " + file.getName());
+		}
+
 		SimpleRepositoryFileData data = repository.getDataForRead(file.getId(),
 				SimpleRepositoryFileData.class);
 
-		ObjectInputStream in = new ObjectInputStream(data.getStream());
+		ViewState state;
 
-		ConnectionMetadata connectionInfo = (ConnectionMetadata) in
-				.readObject();
+		InputStream in = null;
 
-		OlapDataSource dataSource = dataSourceManager
-				.createDataSource(connectionInfo);
+		try {
+			in = data.getStream();
 
-		PivotModel model = new PivotModelImpl(dataSource);
-		model.restoreState((Serializable) in.readObject());
+			XMLConfiguration configuration = new XMLConfiguration();
+			configuration.setRootElementName("report");
+			configuration.setDelimiterParsingDisabled(true);
+			configuration.load(in);
 
-		ViewState state = new ViewState(viewId, connectionInfo, model);
-		state.setReadOnly(true);
-		state.setRendererState((Serializable) in.readObject());
+			if (logger.isDebugEnabled()) {
+				StringWriter writer = new StringWriter();
+				configuration.save(writer);
+				writer.flush();
+				writer.close();
 
-		in.close();
+				logger.debug("Loading report content :"
+						+ System.getProperty("line.separator"));
+				logger.debug(writer.getBuffer().toString());
+			}
+
+			ConnectionMetadata connectionInfo = new ConnectionMetadata();
+			connectionInfo.restoreSettings(configuration);
+
+			OlapDataSource dataSource = dataSourceManager
+					.createDataSource(connectionInfo);
+
+			PivotModel model = new PivotModelImpl(dataSource);
+			model.restoreSettings(configuration);
+
+			PrimeFacesPivotRenderer renderer = new PrimeFacesPivotRenderer(
+					FacesContext.getCurrentInstance());
+			renderer.restoreSettings(configuration);
+
+			Serializable rendererState = renderer.saveState();
+
+			state = new ViewState(viewId, connectionInfo, model);
+			state.setReadOnly(true);
+			state.setRendererState(rendererState);
+		} finally {
+			if (in != null) {
+				in.close();
+			}
+		}
 
 		return state;
 	}
@@ -90,8 +132,10 @@ public class PentahoFileHandler {
 	/**
 	 * @throws PentahoAccessControlException
 	 * @throws IOException
+	 * @throws ConfigurationException
 	 */
-	public void save() throws PentahoAccessControlException, IOException {
+	public void save() throws PentahoAccessControlException, IOException,
+			ConfigurationException {
 		FacesContext context = FacesContext.getCurrentInstance();
 
 		Map<String, String> parameters = context.getExternalContext()
@@ -125,10 +169,11 @@ public class PentahoFileHandler {
 	 * @param overwrite
 	 * @throws PentahoAccessControlException
 	 * @throws IOException
+	 * @throws ConfigurationException
 	 */
 	public void save(String viewId, String path, String fileName,
 			boolean overwrite) throws PentahoAccessControlException,
-			IOException {
+			IOException, ConfigurationException {
 		Logger logger = LoggerFactory.getLogger(getClass());
 		if (logger.isInfoEnabled()) {
 			logger.info("Saving report content to repository :");
@@ -142,20 +187,45 @@ public class PentahoFileHandler {
 
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
 
-		ObjectOutputStream out = new ObjectOutputStream(bout);
+		XMLConfiguration configuration = new XMLConfiguration();
+		configuration.setRootElementName("report");
+		configuration.setDelimiterParsingDisabled(true);
 
-		out.writeObject(state.getConnectionInfo());
-		out.writeObject(state.getModel().bookmarkState());
-		out.writeObject(state.getRendererState());
+		ConnectionMetadata connectionInfo = state.getConnectionInfo();
+		connectionInfo.saveSettings(configuration);
 
-		out.flush();
-		out.close();
+		PivotModel model = state.getModel();
+		model.saveSettings(configuration);
+
+		if (state.getRendererState() != null) {
+			PrimeFacesPivotRenderer renderer = new PrimeFacesPivotRenderer(
+					FacesContext.getCurrentInstance());
+
+			renderer.restoreState(state.getRendererState());
+			renderer.saveSettings(configuration);
+		}
+
+		if (logger.isDebugEnabled()) {
+			StringWriter writer = new StringWriter();
+			configuration.save(writer);
+			writer.flush();
+			writer.close();
+
+			logger.debug("Saving new report :"
+					+ System.getProperty("line.separator"));
+			logger.debug(writer.getBuffer().toString());
+		}
+
+		configuration.save(bout);
+
+		bout.flush();
+		bout.close();
 
 		String filePath = path + fileName;
 
 		IRepositoryFileData data = new SimpleRepositoryFileData(
 				new ByteArrayInputStream(bout.toByteArray()), "UTF-8",
-				"text/html");
+				"text/xml");
 
 		RepositoryFile file = repository.getFile(filePath);
 

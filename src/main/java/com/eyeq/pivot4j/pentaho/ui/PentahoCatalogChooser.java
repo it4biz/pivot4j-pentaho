@@ -13,6 +13,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.pentaho.platform.api.repository2.unified.RepositoryFile;
 import org.pentaho.platform.plugin.action.mondrian.catalog.MondrianCatalog;
 import org.pentaho.platform.plugin.action.mondrian.catalog.MondrianCube;
@@ -117,7 +118,8 @@ public class PentahoCatalogChooser {
 		return viewId == null || viewStateHolder.getState(viewId) == null;
 	}
 
-	public void checkState() throws IOException, ClassNotFoundException {
+	public void checkState() throws IOException, ClassNotFoundException,
+			ConfigurationException {
 		if (viewId != null) {
 			FacesContext facesContext = FacesContext.getCurrentInstance();
 
