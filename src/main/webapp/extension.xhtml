@@ -28,6 +28,10 @@
 				value : overwrite
 			} ]);
 		}
+
+		if (parent &amp;&amp; parent.enableSave) {
+			parent.enableSave(false);
+		}
 	</script>
 
 	<p:ajaxStatus style="display: none;"
