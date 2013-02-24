@@ -44,6 +44,9 @@
 				<entry key="pivot4j.resourcePrefix">
 					<value>/api/repos/pivot4j/webapp</value>
 				</entry>
+				<entry key="pivot4j.localeAttributeName">
+					<value>locale_override</value>
+				</entry>
 			</map>
 		</property>
 	</bean>
