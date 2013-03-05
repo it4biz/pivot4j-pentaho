@@ -84,7 +84,7 @@ public class PentahoFileHandler {
 		InputStream in = null;
 
 		try {
-			in = data.getStream();
+			in = data.getInputStream();
 
 			XMLConfiguration configuration = new XMLConfiguration();
 			configuration.setRootElementName("report");
