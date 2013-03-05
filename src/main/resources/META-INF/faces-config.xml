@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee /WEB-INF/schema/web-facesconfig_2_0.xsd"
-	version="2.0" metadata-complete="false">
+<faces-config version="2.0" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
 	<application>
 		<resource-bundle>
 			<base-name>com.eyeq.pivot4j.primefaces.i18n.messages</base-name>
@@ -24,15 +23,13 @@
 
 	<managed-bean>
 		<managed-bean-name>dataSourceManager</managed-bean-name>
-		<managed-bean-class>com.eyeq.pivot4j.pentaho.datasource.PentahoDataSourceManager
-		</managed-bean-class>
+		<managed-bean-class>com.eyeq.pivot4j.pentaho.datasource.PentahoDataSourceManager</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 
 	<managed-bean>
 		<managed-bean-name>pivotStateManager</managed-bean-name>
-		<managed-bean-class>com.eyeq.pivot4j.primefaces.ui.PivotStateManager
-		</managed-bean-class>
+		<managed-bean-class>com.eyeq.pivot4j.primefaces.ui.PivotStateManager</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
 		<managed-property>
 			<property-name>dataSourceManager</property-name>
