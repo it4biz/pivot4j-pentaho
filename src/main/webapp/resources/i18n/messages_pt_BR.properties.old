@@ -7,12 +7,12 @@
 #  - Fernando Maia (fernando.maia@it4biz.com.br)
 #  Updated on March, 7, 2013
 
-label.catalog = Cat\u221a\u00b0logo
+label.catalog = Catálogo
 label.cube    = Cubo
 
-message.catalog.chooser = Por favor, selecione um Esquema (Schema) e um Cubo (Cube) para criar um relat\u221a\u2265rio de an\u221a\u00b0lise.
+message.catalog.chooser = Por favor, selecione um Esquema (Schema) e um Cubo (Cube) para criar um relatório de análise.
 plugin.menu.new    = Pivot4J Analytics View
 plugin.title       = Pivot4J Analytics
-plugin.toolbar.new = Nova Vis\u221a\u00a3o Anal\u221a\u2260tica Pivot4J
+plugin.toolbar.new = Nova Visão Analítica Pivot4J
 
-title.catalog.chooser = Novo Relat\u221a\u2265rio Anal\u221a\u2260tico
+title.catalog.chooser = Novo Relatório Analítico
